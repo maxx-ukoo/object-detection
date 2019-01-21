@@ -9,6 +9,7 @@ public class Starter {
         url = "https://edge3.iptv.macc.com.ua/img/inter_3/index.m3u8";
         //url = "C:\\TOOLS\\tensorflow\\SampleVideo_720x480_20mb.mp4";
         url = "http://api.tv.ipnet.ua/api/v1/manifest/1442908080.m3u8";
+        url = "http://app.live.112.events/hls/112hd_hi/index.m3u8";
         VideoProcessor detector = new VideoProcessor(url);
         detector.start();
     }

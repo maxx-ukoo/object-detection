@@ -51,7 +51,7 @@ public class ObjectsDetector {
 	
 	public ObjectsDetector() {
 		String[] args = new String[] {
-		"C:\\TOOLS\\tensorflow\\faster_rcnn_inception_v2_coco_2018_01_28\\saved_model",
+		"C:\\TOOLS\\tensorflow\\ssd_mobilenet_v2_coco_2018_03_29\\saved_model",
 		"C:\\TOOLS\\tensorflow\\mscoco_complete_label_map.pbtxt"};
 		
 		try {

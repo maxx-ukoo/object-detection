@@ -103,7 +103,6 @@ public class VideoProcessor {
 
 		while (frame.isVisible()) {
 
-
 			if (future == null) {
                 grabbedImage = Utils.getImage(grabber, converter);
                 processingImage = grabbedImage;
@@ -133,7 +132,7 @@ public class VideoProcessor {
 								Scalar.RED, 1, CV_AA, 0);
 						// cv.rectangle(img, (int(x), int(y)), (int(right), int(bottom)), (125, 255,
 						// 51), thickness=2)
-						String text = String.format("%-20s (score: %.4f)\n", detector.labels[(int) result.classes[i]],
+						String text = String.format("%s (score: %.4f)\n", detector.labels[(int) result.classes[i]],
 								result.scores[i]);
 						putText(processingImage, text, new Point((int) x, (int) y), 1, 1.0, new Scalar(0, 255, 255, 0));
                         putText(processingImage, String.valueOf(result.processingTime), new Point(10, 15), 1, 1.0, new Scalar(255, 255, 0, 0));
@@ -148,7 +147,9 @@ public class VideoProcessor {
                 processingImage = grabbedImage;
                 //resize(grabbedImage, processingImage, new Size(400, 400));
                 future = pool.submit(new CalableDetector(detector, mat2Img(processingImage)));
-			}
+			} else {
+                grabber.grab();
+            }
 
 			// resize(grabbedImage, croppedimage, new Size(400, 400));
 
@@ -170,9 +171,11 @@ public class VideoProcessor {
 			 */
 
 		}
+        pool.shutdown();
 		frame.dispose();
 		// recorder.stop();
 		grabber.stop();
+        System.out.println("Finish");
 
 	}
 

@@ -50,7 +50,6 @@ public class Utils {
         Frame frame = grabber.grab();
         while(frame == null) {
             frame = grabber.grab();
-            System.out.println("Skip frame");
         }
         return frame;
     }
@@ -59,7 +58,6 @@ public class Utils {
         opencv_core.Mat image = converter.convert(grabbedFrame);
         while (image == null) {
             image = converter.convert(grabbedFrame);
-            System.out.println("Skip image");
         }
         return image;
     }
