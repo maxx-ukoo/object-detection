@@ -40,8 +40,6 @@ import org.bytedeco.javacv.Frame;
 import org.bytedeco.javacv.FrameGrabber;
 import org.bytedeco.javacv.OpenCVFrameConverter;
 
-
-
 public class VideoProcessor {
 
 	private final String stream;
@@ -53,7 +51,7 @@ public class VideoProcessor {
 	public void start() throws org.bytedeco.javacv.FrameGrabber.Exception {
 
 		FrameGrabber grabber = Utils.openStream(stream);
-        //FrameGrabber grabber = FrameGrabber.createDefault(0);
+		// FrameGrabber grabber = FrameGrabber.createDefault(0);
 		grabber.start();
 
 		OpenCVFrameConverter.ToMat converter = new OpenCVFrameConverter.ToMat();
@@ -62,7 +60,7 @@ public class VideoProcessor {
 
 		int height = grabbedImage.rows();
 		int width = grabbedImage.cols();
-        System.out.println(String.format("Frame size: %dx%d", height, width));
+		System.out.println(String.format("Frame size: %dx%d", height, width));
 
 		// Objects allocated with `new`, clone(), or a create*() factory method are
 		// automatically released
@@ -99,14 +97,14 @@ public class VideoProcessor {
 		ExecutorService pool = Executors.newFixedThreadPool(1);
 
 		Future<DetectionResult> future = null;
-        Mat processingImage = new Mat(height, width, CV_8UC1);;
+		Mat processingImage = new Mat(height, width, CV_8UC1);
+		;
 
 		while (frame.isVisible()) {
 
 			if (future == null) {
-                grabbedImage = Utils.getImage(grabber, converter);
-                processingImage = grabbedImage;
-                //resize(grabbedImage, processingImage, new Size(400, 400));
+				grabbedImage = Utils.getImage(grabber, converter);
+				processingImage = grabbedImage;
 				future = pool.submit(new CalableDetector(detector, mat2Img(processingImage)));
 			}
 
@@ -115,7 +113,7 @@ public class VideoProcessor {
 					DetectionResult result = future.get();
 
 					for (int i = 0; i < result.scores.length; ++i) {
-						if (result.scores[i] < 0.5) {
+						if (result.scores[i] < 0.1) {
 							continue;
 						}
 						float[] rect = result.boxes[i];
@@ -135,21 +133,24 @@ public class VideoProcessor {
 						String text = String.format("%s (score: %.4f)\n", detector.labels[(int) result.classes[i]],
 								result.scores[i]);
 						putText(processingImage, text, new Point((int) x, (int) y), 1, 1.0, new Scalar(0, 255, 255, 0));
-                        putText(processingImage, String.valueOf(result.processingTime), new Point(10, 15), 1, 1.0, new Scalar(255, 255, 0, 0));
 
-						Frame rotatedFrame = converter.convert(processingImage);
-						frame.showImage(rotatedFrame);
 					}
+					putText(processingImage, String.valueOf(result.processingTime), new Point(10, 15), 1, 1.0,
+							new Scalar(255, 255, 0, 0));
+					Frame rotatedFrame = converter.convert(processingImage);
+
+					frame.showImage(rotatedFrame);
 				} catch (Exception e) {
+					e.printStackTrace();
 					// TODO: handle exception
 				}
-                grabbedImage = Utils.getImage(grabber, converter);
-                processingImage = grabbedImage;
-                //resize(grabbedImage, processingImage, new Size(400, 400));
-                future = pool.submit(new CalableDetector(detector, mat2Img(processingImage)));
+				grabbedImage = Utils.getImage(grabber, converter);
+				processingImage = grabbedImage;
+				//resize(grabbedImage, processingImage, new Size(400, 400));
+				future = pool.submit(new CalableDetector(detector, mat2Img(processingImage)));
 			} else {
-                grabber.grab();
-            }
+				grabber.grab();
+			}
 
 			// resize(grabbedImage, croppedimage, new Size(400, 400));
 
@@ -171,15 +172,12 @@ public class VideoProcessor {
 			 */
 
 		}
-        pool.shutdown();
+		pool.shutdown();
 		frame.dispose();
 		// recorder.stop();
 		grabber.stop();
-        System.out.println("Finish");
+		System.out.println("Finish");
 
 	}
-
-
-
 
 }

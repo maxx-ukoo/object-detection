@@ -10,6 +10,7 @@ public class Starter {
         //url = "C:\\TOOLS\\tensorflow\\SampleVideo_720x480_20mb.mp4";
         url = "http://api.tv.ipnet.ua/api/v1/manifest/1442908080.m3u8";
         url = "http://app.live.112.events/hls/112hd_hi/index.m3u8";
+        url = "rtsp://192.168.0.21:554/user=admin_password=6QNMIQGe_channel=1_stream=0.sdp?real_stream";
         VideoProcessor detector = new VideoProcessor(url);
         detector.start();
     }
